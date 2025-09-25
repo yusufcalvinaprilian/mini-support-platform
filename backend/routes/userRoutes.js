@@ -1,41 +1,30 @@
 const express = require("express");
-const { registerUser, loginUser, getUsers, getUserById, getUserBySupportLink, updateUser, deleteUser } = require("../controllers/userController");
+const { registerUser, loginUser, getUsers, getUserById, getUserBySupportLink, updateUser, deleteUser, getCreators } = require("../controllers/userController");
+const auth = require("../middleware/auth"); // Asumsi middleware auth sudah ada
 
 const router = express.Router();
 
-// @route   POST /api/users/register
-// @desc    Register new user
-// @access  Public
+// Rute Publik (tidak memerlukan token)
 router.post("/register", registerUser);
-
-// @route   POST /api/users/login
-// @desc    Login user
-// @access  Public
 router.post("/login", loginUser);
-
-// @route   GET /api/users
-// @desc    Get all users with pagination
-// @access  Public
+router.get("/creators", getCreators);
 router.get("/", getUsers);
-
-// @route   GET /api/users/:id
-// @desc    Get user by ID
-// @access  Public
+router.get("/support/:supportLink", getUserBySupportLink);
 router.get("/:id", getUserById);
 
-// @route   GET /api/users/support/:supportLink
-// @desc    Get user by support link
-// @access  Public
-router.get("/support/:supportLink", getUserBySupportLink);
-
+// Rute Privat (memerlukan token)
 // @route   PUT /api/users/:id
 // @desc    Update user profile
-// @access  Private (akan ditambahkan middleware auth)
-router.put("/:id", updateUser);
+// @access  Private
+router.put("/:id", auth, updateUser);
 
 // @route   DELETE /api/users/:id
 // @desc    Delete user (soft delete)
-// @access  Private (akan ditambahkan middleware auth)
-router.delete("/:id", deleteUser);
+// @access  Private
+router.delete("/:id", auth, deleteUser);
+
+// Tambahkan rute privat lainnya di sini
+// Contoh: Rute untuk membuat postingan dan donasi
+// Rute ini juga harus menggunakan middleware 'auth'
 
 module.exports = router;

@@ -42,3 +42,4 @@ console.log("   npm run dev");
 
 console.log("\n💡 To restore MongoDB Atlas later:");
 console.log("   cp .env.backup .env");
+

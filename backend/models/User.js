@@ -58,8 +58,8 @@ const userSchema = new mongoose.Schema(
 		},
 		role: {
 			type: String,
-			enum: ["user", "admin"],
-			default: "user",
+			enum: ["creator", "fan", "admin"], // Peran yang konsisten
+			default: "fan", // Default role untuk pengguna baru
 		},
 
 		// Statistik user
@@ -87,18 +87,11 @@ const userSchema = new mongoose.Schema(
 	}
 );
 
-// Index untuk performa query (unique fields sudah otomatis di-index)
-// userSchema.index({ email: 1 }); // Sudah unique, tidak perlu index manual
-// userSchema.index({ username: 1 }); // Sudah unique, tidak perlu index manual
-// userSchema.index({ supportLink: 1 }); // Sudah unique, tidak perlu index manual
-
 // Middleware: Hash password sebelum save
 userSchema.pre("save", async function (next) {
-	// Hanya hash password jika password diubah
 	if (!this.isModified("password")) return next();
 
 	try {
-		// Hash password dengan salt rounds 12
 		const salt = await bcrypt.genSalt(12);
 		this.password = await bcrypt.hash(this.password, salt);
 		next();
@@ -114,8 +107,8 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
 
 // Method: Generate support link otomatis
 userSchema.methods.generateSupportLink = function () {
-	if (!this.supportLink) {
-		this.supportLink = `support-${this.username.toLowerCase()}`;
+	if (!this.supportLink && this.username) {
+		this.supportLink = `support-${this.username.toLowerCase().replace(/\s/g, "-")}`;
 	}
 	return this.supportLink;
 };

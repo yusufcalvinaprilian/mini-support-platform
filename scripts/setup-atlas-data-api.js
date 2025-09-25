@@ -55,3 +55,4 @@ console.log("   3. Update MONGODB_URI in .env to local connection");
 
 console.log("\n💡 To restore original Atlas connection later:");
 console.log("   cp .env.backup .env");
+

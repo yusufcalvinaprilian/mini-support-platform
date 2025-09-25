@@ -56,3 +56,4 @@ console.log("   3. Set USE_MEMORY_DB=false");
 
 console.log("\n💡 To restore MongoDB Atlas later:");
 console.log("   cp .env.backup .env");
+
